@@ -17,8 +17,11 @@ pipeline {
             }
         }
         stage('Install Dependencies') {
-            steps {
-                sh 'npm install --legacy-peer-deps'
+            steps { 
+                timeout(time: 30, unit: 'MINUTES') 
+                { 
+                    sh 'npm install --legacy-peer-deps' 
+                } 
             }
         }
         stage('Build') {
