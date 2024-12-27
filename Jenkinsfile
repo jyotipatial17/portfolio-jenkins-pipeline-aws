@@ -5,7 +5,7 @@ pipeline {
     }
     environment {
         EC2_USER = 'ubuntu'  // Adjust as needed
-        EC2_HOST = '10.0.1.19'  // Adjust as needed
+        EC2_HOST = '3.111.144.114'  // Adjust as needed
         EC2_KEY_PATH = '/home/ubuntu/vpc_test.pem'  // Adjust as needed
         BUILD_DIR = "${WORKSPACE}/build"  // Ensure the build output directory is correct
         DEPLOY_DIR = '/var/www/html'  // Adjust as needed
