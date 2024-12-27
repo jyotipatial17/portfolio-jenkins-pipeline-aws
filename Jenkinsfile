@@ -8,7 +8,7 @@ pipeline {
         EC2_USER = 'ubuntu'  // EC2 user (adjust as needed)
         EC2_HOST = '10.0.1.19'  // Private IP or Public IP of the EC2 instance
         EC2_KEY_PATH = '/home/ubuntu/vpc_test.pem'  // Path to your private SSH key
-        BUILD_DIR = 'build'  // The output folder from npm run build
+        BUILD_DIR = '/var/lib/jenkins/workspace/portfolio-jenkins-pipeline-aws'  // The output folder from npm run build
         DEPLOY_DIR = '/var/www/html'  // Apache's default document root on EC2
     }
     stages {
@@ -21,6 +21,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 // Install npm dependencies
+                sh 'sudo su'
                 sh 'npm install'
             }
         }
