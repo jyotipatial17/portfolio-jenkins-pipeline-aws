@@ -8,7 +8,7 @@ pipeline {
         EC2_USER = 'ubuntu'  // EC2 user (adjust as needed)
         EC2_HOST = '10.0.1.19'  // Private IP or Public IP of the EC2 instance
         EC2_KEY_PATH = '/home/ubuntu/vpc_test.pem'  // Path to your private SSH key
-        BUILD_DIR = '/var/lib/jenkins/workspace/portfolio-jenkins-pipeline-aws'  // The output folder from npm run build
+        BUILD_DIR = "${WORKSPACE}/build"  // The output folder from npm run build
         DEPLOY_DIR = '/var/www/html'  // Apache's default document root on EC2
     }
     stages {
@@ -21,7 +21,6 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 // Install npm dependencies
-                sh 'sudo su'
                 sh 'npm install'
             }
         }
@@ -41,7 +40,7 @@ pipeline {
             steps {
                 script {
                     // Ensure the build directory is correctly defined
-                    def buildDir = "${WORKSPACE}/build"  // Use WORKSPACE to get the actual Jenkins workspace directory
+                    def buildDir = "${BUILD_DIR}"  // Use BUILD_DIR from environment variables
                     def deployDir = "${DEPLOY_DIR}"
 
                     // Copy the build output to the EC2 instance's deploy directory
