@@ -5,23 +5,20 @@ pipeline {
     }
     environment {
         EC2_USER = 'ubuntu'  // Adjust as needed
-        EC2_HOST = '43.205.195.231'  // Adjust as needed
+        EC2_HOST = '3.111.144.114'  // Adjust as needed
         EC2_KEY_PATH = '/home/ubuntu/vpc_test.pem'  // Adjust as needed
-        BUILD_DIR = '/var/lib/jenkins/workspace/portfloio/build'  // Ensure the build output directory is correct
+        BUILD_DIR = "${WORKSPACE}/build"  // Ensure the build output directory is correct
         DEPLOY_DIR = '/var/www/html'  // Adjust as needed
     }
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/jyotipatial17/portfolio-jenkins-pipeline-aws.git' , branch:'main'
+                git url: 'https://github.com/jyotipatial17/portfolio-jenkins-pipeline-aws.git', branch: 'main'
             }
         }
         stage('Install Dependencies') {
-            steps { 
-                timeout(time: 30, unit: 'MINUTES') 
-                { 
-                    sh 'npm install --legacy-peer-deps' 
-                } 
+            steps {
+                sh 'sudo npm install --legacy-peer-deps'
             }
         }
         stage('Build') {
@@ -45,7 +42,7 @@ pipeline {
                     """
 
                     sh """
-                    ssh -o StrictHostKeyChecking-no -i ${EC2_KEY_PATH} ${EC2_USER}@${EC2_HOST} 'sudo systemctl restart apache2'
+                    ssh -o StrictHostKeyChecking=no -i ${EC2_KEY_PATH} ${EC2_USER}@${EC2_HOST} 'sudo systemctl restart apache2'
                     """
                 }
             }
