@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/jyotipatial17/portfolio-jenkins-pipeline-aws.git'
+                git url: 'https://github.com/jyotipatial17/portfolio-jenkins-pipeline-aws.git' , branch: 'main'
             }
         }
         stage('Install Dependencies') {
