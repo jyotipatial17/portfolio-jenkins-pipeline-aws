@@ -1,14 +1,15 @@
 pipeline {
     agent any
+    tools { 
+        git 'Default' // Ensure this matches the configured Git installation name in Jenkins 
+    }
     environment {
         // Jenkins workspace and deployment directories
         EC2_USER = 'ubuntu'  // EC2 user (adjust as needed)
-        EC2_HOST = '10.0.1.19'  // Public IP of the EC2 instance
+        EC2_HOST = '10.0.1.19'  // Private IP or Public IP of the EC2 instance
         EC2_KEY_PATH = '/home/ubuntu/vpc_test.pem'  // Path to your private SSH key
-       
-       
-        BUILD_DIR = '/var/lib/jenkins/workspace/portfolio-jenkins-pipeline-aws'  // Ensure this is the correct path
-        DEPLOY_DIR = '/var/www/html/'  // Apache's default document root
+        BUILD_DIR = 'build'  // The output folder from npm run build
+        DEPLOY_DIR = '/var/www/html'  // Apache's default document root on EC2
     }
     stages {
         stage('Checkout') {
@@ -35,27 +36,22 @@ pipeline {
                 sh 'npm test'
             }
         }
-        stage('Deploy') {
+        stage('Deploy to EC2') {
             steps {
                 script {
-                    // Ensure the build directory is correctly defined (build is the default output for create-react-app)
+                    // Ensure the build directory is correctly defined
                     def buildDir = "${WORKSPACE}/build"  // Use WORKSPACE to get the actual Jenkins workspace directory
                     def deployDir = "${DEPLOY_DIR}"
-                    
-                    // Ensure the deploy directory exists (in case it's missing)
-                    sh """
-                    if [ ! -d $deployDir ]; then
-                        sudo mkdir -p $deployDir
-                    fi
-                    """
-                    
-                    // Copy build output to the deployment directory on the server
-                    sh "sudo cp -r $buildDir/* $deployDir"
 
-                    // Optionally, restart Apache web server
-                    sh '''
-                    sudo systemctl restart apache2
-                    '''
+                    // Copy the build output to the EC2 instance's deploy directory
+                    sh """
+                    scp -o StrictHostKeyChecking=no -i ${EC2_KEY_PATH} -r ${buildDir}/* ${EC2_USER}@${EC2_HOST}:${deployDir}
+                    """
+
+                    // Optionally, restart Apache on the EC2 instance to serve the new build
+                    sh """
+                    ssh -o StrictHostKeyChecking=no -i ${EC2_KEY_PATH} ${EC2_USER}@${EC2_HOST} 'sudo systemctl restart apache2'
+                    """
                 }
             }
         }
