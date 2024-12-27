@@ -2,14 +2,15 @@ pipeline {
     agent any
     environment {
         // Jenkins workspace and deployment directories
-        BUILD_DIR = '/var/lib/jenkins/workspace/portfolio-frontend'  // Ensure this is the correct path
+        GIT_CREDENTIALS = credentials('git-hub-token') 
+        BUILD_DIR = '/var/lib/jenkins/workspace/portfolio-jenkins-pipeline-aws'  // Ensure this is the correct path
         DEPLOY_DIR = '/var/www/html/'  // Apache's default document root
     }
     stages {
         stage('Checkout') {
             steps {
                 // Checkout the code from GitHub repository
-                git url: 'https://github.com/jyotipatial17/portfolio-jenkins-pipeline-aws.git'
+                git credentialsId: 'git-hub-token', url: 'https://github.com/jyotipatial17/portfolio-jenkins-pipeline-aws.git'
             }
         }
         stage('Install Dependencies') {
