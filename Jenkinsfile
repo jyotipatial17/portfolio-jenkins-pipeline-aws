@@ -2,6 +2,10 @@ pipeline {
     agent any
     environment {
         // Jenkins workspace and deployment directories
+        EC2_USER = 'ubuntu'  // EC2 user (adjust as needed)
+        EC2_HOST = '10.0.1.19'  // Public IP of the EC2 instance
+        EC2_KEY_PATH = '/home/ubuntu/vpc_test.pem'  // Path to your private SSH key
+       
         GIT_CREDENTIALS = credentials('git-hub-token') 
         BUILD_DIR = '/var/lib/jenkins/workspace/portfolio-jenkins-pipeline-aws'  // Ensure this is the correct path
         DEPLOY_DIR = '/var/www/html/'  // Apache's default document root
