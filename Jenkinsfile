@@ -13,12 +13,12 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/jyotipatial17/portfolio-jenkins-pipeline-aws.git' , branch: 'main'
+                git url: 'https://github.com/jyotipatial17/portfolio-jenkins-pipeline-aws.git' , branch:'main'
             }
         }
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                sh 'npm install --legacy-peer-deps'
             }
         }
         stage('Build') {
@@ -34,7 +34,7 @@ pipeline {
         stage('Deploy to EC2') {
             steps {
                 script {
-                    def buildDir = "${BUILD_DIR}"
+                    def buildDir = "${BUILD_DIR}"  // Use BUILD_DIR from environment variables
                     def deployDir = "${DEPLOY_DIR}"
 
                     sh """
@@ -42,7 +42,7 @@ pipeline {
                     """
 
                     sh """
-                    ssh -o StrictHostKeyChecking=no -i ${EC2_KEY_PATH} ${EC2_USER}@${EC2_HOST} 'sudo systemctl restart apache2'
+                    ssh -o StrictHostKeyChecking-no -i ${EC2_KEY_PATH} ${EC2_USER}@${EC2_HOST} 'sudo systemctl restart apache2'
                     """
                 }
             }
