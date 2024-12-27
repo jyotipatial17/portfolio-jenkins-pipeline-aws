@@ -2,8 +2,8 @@ pipeline {
     agent any
     environment {
         // Jenkins workspace and deployment directories
-        BUILD_DIR = '/var/lib/jenkins/workspace/portfolio-frontend' // Make sure this is the correct path
-        DEPLOY_DIR = '/var/www/html/' // The directory where you want to deploy your build
+        BUILD_DIR = '/var/lib/jenkins/workspace/portfolio-frontend'  // Ensure this is the correct path
+        DEPLOY_DIR = '/var/www/html/'  // Apache's default document root
     }
     stages {
         stage('Checkout') {
@@ -37,7 +37,7 @@ pipeline {
                     def buildDir = "${WORKSPACE}/build"  // Use WORKSPACE to get the actual Jenkins workspace directory
                     def deployDir = "${DEPLOY_DIR}"
                     
-                    // Ensure the deploy directory exists
+                    // Ensure the deploy directory exists (in case it's missing)
                     sh """
                     if [ ! -d $deployDir ]; then
                         sudo mkdir -p $deployDir
@@ -45,11 +45,11 @@ pipeline {
                     """
                     
                     // Copy build output to the deployment directory on the server
-                    sh "cp -r $buildDir/* $deployDir"
+                    sh "sudo cp -r $buildDir/* $deployDir"
 
-                    // Optionally, restart the web server if needed
+                    // Optionally, restart Apache web server
                     sh '''
-                    sudo systemctl restart nginx // Make sure you use the correct service (e.g., nginx, apache2, etc.)
+                    sudo systemctl restart apache2
                     '''
                 }
             }
