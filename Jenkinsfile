@@ -6,7 +6,7 @@ pipeline {
         EC2_HOST = '10.0.1.19'  // Public IP of the EC2 instance
         EC2_KEY_PATH = '/home/ubuntu/vpc_test.pem'  // Path to your private SSH key
        
-        GIT_CREDENTIALS = credentials('git-hub-token') 
+       
         BUILD_DIR = '/var/lib/jenkins/workspace/portfolio-jenkins-pipeline-aws'  // Ensure this is the correct path
         DEPLOY_DIR = '/var/www/html/'  // Apache's default document root
     }
@@ -14,7 +14,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the code from GitHub repository
-                git credentialsId: 'git-hub-token', url: 'https://github.com/jyotipatial17/portfolio-jenkins-pipeline-aws.git'
+                git url: 'https://github.com/jyotipatial17/portfolio-jenkins-pipeline-aws.git'
             }
         }
         stage('Install Dependencies') {
